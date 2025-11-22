@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BayAni Agricultural information </title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for a cleaner aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fdee; /* Very light green/creamy background */
+        }
+        .variety-card {
+            transition: all 0.3s ease;
+        }
+        .variety-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        /* Adjusted max-height for faster and smoother transitions */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-in-out; 
+        }
+        .accordion-content.active {
+            max-height: 1000px; /* Increased height for the detailed info */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Header Section -->
+        <header class="text-center py-8 mb-8 bg-white rounded-xl shadow-lg border-b-4 border-lime-600">
+            <h1 class="text-4xl font-extrabold text-gray-800">BayAni Agricultural Imformation</h1>
+            <p class="text-lg text-lime-700 mt-2">information para sa ating magigiting na mag sasaka. 
+            pindutin ang alinman sa mga uri ng palay sa ibaba upang ipakita ang mga katangian ng palay, kalidad ng butil, at reaksyon sa mga peste at sakit.</p>
+        </header>
+
+        <!-- Quick Classification Guide (Updated for Yield Potential) -->
+        <section id="classification-guide" class="mb-10 p-6 bg-green-50 rounded-xl shadow-inner border border-green-200">
+            <h2 class="text-2xl font-bold text-green-800 mb-4 border-b pb-2 border-green-300">Maikling Gabay sa Potensyal na Ani (Yield Potential)</h2>
+            <p class="text-gray-700 mb-4">Ang potensyal sa ani ng palay ay nakadepende sa uri, sa bilis ng pag-ani (maturity), at sa lebel ng pamamahala (input).</p>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                
+                <!-- Classification 1: Variety Type (Hybrid vs Inbred) -->
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-600">
+                    <h3 class="font-semibold text-lg text-red-700 mb-1">1. Batay sa Uri ng Butil (Hybrid vs Inbred)</h3>
+                    <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                        <li><span class="font-medium">Hybrid (Mestizo):</span> May Pinakamataas na Potensyal na Ani (10-15% na mas mataas kaysa Inbred).</li>
+                        <li><span class="font-medium">Inbred (PSB/NSIC):</span> Mataas na Potensyal na Ani. Mas matatag at mas madaling pamahalaan.</li>
+                        <li><span class="font-medium">Traditional/Specialty:</span> Katamtaman hanggang Mababa. Priority: Kalidad, hindi Dami.</li>
+                    </ul>
+                </div>
+
+                <!-- Classification 2: Maturity Period (Time to Harvest) -->
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-lime-600">
+                    <h3 class="font-semibold text-lg text-lime-700 mb-1">2. Batay sa Haba ng Araw (Maikli vs. Matagal)</h3>
+                    <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                        <li><span class="font-medium">Maikling Araw (100-110 days):</span> Nagpapahintulot ng mas madalas na pagtatanim (3x/2 taon). Mas mataas ang Total Yield per Year.</li>
+                        <li><span class="font-medium">Matagal na Araw (120+ days):</span> Karaniwang mas mataas ang ani sa Isang Tanaman, ngunit mas mababa ang Total Yield per Year.</li>
+                    </ul>
+                </div>
+
+                <!-- Classification 3: Management Input (Abono at Tubig) -->
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-600">
+                    <h3 class="font-semibold text-lg text-blue-700 mb-1">3. Batay sa Pangangailangan (Input Level)</h3>
+                    <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                        <li><span class="font-medium">Mataas na Input (Fertilizer/Water):</span> Kailangan ng Masinsinang Pamamahala (Hybrid, High-Yield Inbred) para maabot ang pinakamataas na ani.</li>
+                        <li><span class="font-medium">Mababang Input (Rainfed):</span> Maaring maani sa simpleng pamamahala, ngunit Mas Mababa ang Potensyal na Kita sa bawat tanim.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Philippine INBRED Varieties Section (Dynamically Generated) -->
+        <section id="philippine-varieties" class="space-y-6 mb-10">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 border-b-2 border-gray-300 pb-2">Mga Uri ng Inbred Palay sa Pilipinas (PSB/NSIC)</h2>
+            <p class="text-sm text-gray-600 mb-4">Ang Inbred ay madaling pamahalaan at kadalasan ay mas matibay sa karaniwang kondisyon. Gamitin ang Inbred Agronomic Data sa loob ng card.</p>
+            <div id="inbred-varieties-list" class="space-y-4">
+                <!-- Inbred Content will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Philippine HYBRID Varieties Section (Dynamically Generated) -->
+        <section id="hybrid-varieties" class="space-y-6 mb-10">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 border-b-2 border-gray-300 pb-2">Mga Uri ng Hybrid Palay sa Pilipinas (Mestiso Varieties)</h2>
+            <p class="text-sm text-red-600 font-semibold mb-4">Ang Hybrid ay may mataas na potensyal sa ani, ngunit nangangailangan ng mas masinsinang pamamahala at mas maraming abono. Gamitin ang Hybrid Agronomic Data sa loob ng card.</p>
+            <div id="hybrid-varieties-list" class="space-y-4">
+                <!-- Hybrid Content will be injected here by JavaScript -->
+            </div>
+        </section>
+
+
+        <!-- Main Content: Global Rice Varieties List (Existing Content) -->
+        <section id="rice-varieties" class="space-y-6">
+
+            <!-- Title for the list -->
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 border-b-2 border-gray-300 pb-2">Iba Pang Sikat na Uri ng Palay sa ating bansa</h2>
+
+            <!-- Card 1: Basmati (Aromatic Long Grain) -->
+            <div id="global-variety-1" class="variety-card bg-white p-5 rounded-lg shadow-md border-t-4 border-amber-500 cursor-pointer" onclick="toggleDetails('global-variety-1-details')">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-900">Basmati (Mabangong Mahabang Butil)</h3>
+                    <span class="text-amber-600 text-2xl" id="icon-global-1">▼</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">Kategorya: Premium na Mabango at Buhaghag Kapag Niluto</p>
+                <div id="global-variety-1-details" class="accordion-content">
+                    <div class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <h4 class="font-semibold text-lg text-amber-800 mb-2">Pangunahing Katangian</h4>
+                        <ul class="text-gray-700 space-y-2 text-sm">
+                            <li class="flex items-start"><span class="font-medium mr-2 text-amber-700 w-28 shrink-0">Kalidad ng Butil:</span> Napakahaba, payat, at may kakaibang bango.</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-amber-700 w-28 shrink-0">Pagsasaka:</span> Karaniwang nangangailangan ng maraming patubig; marupok at madaling matumba sa malakas na hangin.</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-amber-700 w-28 shrink-0">Gamit sa Pagluto:</span> Biryani, Pilaf, at iba pang putahe kung saan kailangan ang buhaghag at hiwalay na bigas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Arborio (Italian Short Grain) -->
+            <div id="global-variety-2" class="variety-card bg-white p-5 rounded-lg shadow-md border-t-4 border-blue-500 cursor-pointer" onclick="toggleDetails('global-variety-2-details')">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-900">Arborio (Maikling Butil ng Italya)</h3>
+                    <span class="text-blue-600 text-2xl" id="icon-global-2">▼</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">Kategorya: Bigas para sa Risotto at Pudding</p>
+                <div id="global-variety-2-details" class="accordion-content">
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 class="font-semibold text-lg text-blue-800 mb-2">Pangunahing Katangian</h4>
+                        <ul class="text-gray-700 space-y-2 text-sm">
+                            <li class="flex items-start"><span class="font-medium mr-2 text-blue-700 w-28 shrink-0">Kalidad ng Butil:</span> Bilog, hugis-itlog na butil na may puting gitna. Naglalabas ng maraming almirol kaya malapot/creamy.</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-blue-700 w-28 shrink-0">Pagsasaka:</span> Katamtaman hanggang mataas ang ani sa hilagang Italya; kailangan ng maingat na pamamahala ng tubig.</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-blue-700 w-28 shrink-0">Gamit sa Pagluto:</span> Pangunahing sangkap sa Italian risotto; nagpapalabas ng almirol habang nananatiling matigas ang loob (al dente).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Black Forbidden Rice (Pigmented Specialty) -->
+            <div id="global-variety-3" class="variety-card bg-white p-5 rounded-lg shadow-md border-t-4 border-indigo-500 cursor-pointer" onclick="toggleDetails('global-variety-3-details')">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-900">Black Forbidden Rice (Itim na Palay)</h3>
+                    <span class="text-indigo-600 text-2xl" id="icon-global-3">▼</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">Kategorya: Buong Butil at Mataas sa Antioxidant</p>
+                <div id="global-variety-3-details" class="accordion-content">
+                    <div class="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                        <h4 class="font-semibold text-lg text-indigo-800 mb-2">Pangunahing Katangian</h4>
+                        <ul class="text-gray-700 space-y-2 text-sm">
+                            <li class="flex items-start"><span class="font-medium mr-2 text-indigo-700 w-28 shrink-0">Kalidad ng Butil:</span> Katamtamang butil na may kulay ube/itim na balat. Malagkit kapag niluto, may lasang mani.</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-indigo-700 w-28 shrink-0">Pagsasaka:</span> Mas matagal tumubo kaysa sa puting palay; kadalasang itinatanim sa lupang umaasa lang sa ulan (rainfed) o bundok (upland).</li>
+                            <li class="flex items-start"><span class="font-medium mr-2 text-indigo-700 w-28 shrink-0">Gamut sa Pagluto:</span> Salads, rice bowls, o bilang pangkontra-kulay sa mga mamahaling putahe.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- Footer/Source Disclaimer -->
+        <footer class="mt-12 pt-6 border-t border-gray-300 text-center">
+            <p class="text-xs text-gray-500">
+                Ang datos sa pagsasaka ay kumakatawan sa karaniwang katangian ng inbred at hybrid rice na may mataas na ani sa irigasyon. Ang mga partikular na katangian ay maaaring mag-iba depende sa sub-variety at lokasyon.
+            </p>
+        </footer>
+    </div>
+
+    <!-- JavaScript for Data and Accordion Functionality -->
+    <script>
+        // --- 1. Data Definitions for Philippine Inbred Varieties ---
+        const philippineInbreds = [
+            { code: "PSB Rc2", name: "NAHALIN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc4", name: "MOLAWIN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc6", name: "CARRANGLAN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc8", name: "TALAVERA", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc10", name: "PAGSANJAN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc18", name: "ALA", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc20", name: "CHICO", maturity: "115 araw", yield: "Mataos", type: "Inbred Irrigated" },
+            { code: "PSB Rc22", name: "LILIW", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc28", name: "AGNO", maturity: "120 araw", yield: "Napakataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc30", name: "AGUS", maturity: "120 araw", yield: "Napakataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc32", name: "JARO", maturity: "120 araw", yield: "Napakataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc34", name: "BURDAGOL", maturity: "120 araw", yield: "Napakataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc52", name: "GANDARA", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc54", name: "ABRA", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc56", name: "DAPITAN", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc58", name: "MAYAPA", maturity: "115 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc64", name: "KABACAN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc66", name: "AGUSAN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc74", name: "AKLAN", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc78", name: "PAMPANGA", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc80", name: "PASIG", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "PSB Rc82", name: "PEÑARANDA", maturity: "110 araw", yield: "Mataas", type: "Inbred Irrigated" },
+            { code: "IR69726-29-1-2-2-2", name: "MATATAG 2", maturity: "110 araw", yield: "Katamtaman", type: "Mataas sa Iron/Zinc" },
+            { code: "IR73885-1-4-3-2-1-6", name: "MATATAG 9", maturity: "110 araw", yield: "Katamtaman", type: "Mataas sa Iron/Zinc" },
+            { code: "NSIC RC 110", name: "TUBIGAN 1", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 112", name: "TUBIGAN 2", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 118", name: "MATATAG 3", maturity: "115 araw", yield: "Katamtaman", type: "Mataas sa Iron/Zinc" },
+            { code: "NSIC RC 120", name: "MATATAG 6", maturity: "115 araw", yield: "Katamtaman", type: "Mataas sa Iron/Zinc" },
+            { code: "NSIC RC 122", name: "ANGELICA", maturity: "115 araw", yield: "Mataas", type: "Mabango" },
+            { code: "NSIC RC 128", name: "MABANGO 1", maturity: "115 araw", yield: "Mataas", type: "Mabango" },
+            { code: "NSIC RC 130", name: "TUBIGAN 3", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 134", name: "TUBIGAN 4", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 138", name: "TUBIGAN 5", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 140", name: "TUBIGAN 6", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 142", name: "TUBIGAN 7", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 144", name: "TUBIGAN 8", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 146", name: "PJ7", maturity: "110 araw", yield: "Mataas", type: "May Patubig" },
+            { code: "NSIC RC 148", name: "Mabango 2", maturity: "115 araw", yield: "Mataas", type: "Mabango" },
+            { code: "NSIC RC 150", name: "Tubigan 9", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 152", name: "Tubigan 10", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 154", name: "Tubigan 11", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 156", name: "Tubigan 12", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 158", name: "Tubigan 13", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 160", name: "Tubigan 14", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 170", name: "MS 11", maturity: "115 araw", yield: "Mataas", type: "May Patubig" },
+            { code: "NSIC RC 172", name: "MS 13", maturity: "115 araw", yield: "Mataas", type: "May Patubig" },
+            { code: "NSIC RC 194", name: "Submarino 1", maturity: "115 araw", yield: "Mataas", type: "Tolerant sa Paglubog" },
+            { code: "NSIC RC 212", name: "Tubigan 15", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 214", name: "Tubigan 16", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 216", name: "Tubigan 17", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 218 SR", name: "Mabango 3", maturity: "115 araw", yield: "Mataas", type: "Mabango" },
+            { code: "NSIC RC 220 SR", name: "Japonica 1", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 222", name: "Tubigan 18", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 224", name: "TUBIGAN 19", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 226", name: "TUBIGAN 20", maturity: "110 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 238", name: "Tubigan 21", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 240", name: "Tubigan 22", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 242 SR", name: "Japonica 2", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 298", name: "Tubigan 23", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 300", name: "Tubigan 24", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 302", name: "Tubigan 25", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 304", name: "Japonica 3", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 308", name: "Tubigan 26", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 342 SR", name: "Mabango 4", maturity: "115 araw", yield: "Mataas", type: "Mabango" },
+            { code: "NSIC RC 352", name: "TUBIGAN 27", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 354", name: "TUBIGAN 28", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 356", name: "TUBIGAN 29", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 358", name: "TUBIGAN 30", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 360", name: "TUBIGAN 31", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 394", name: "TUBIGAN 32", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 396", name: "Tubigan 33", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 398", name: "Tubigan 34", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 400", name: "Tubigan 35", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 402", name: "Tubigan 36", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 414 SR", name: "Japonica 4", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 436", name: "TUBIGAN 37", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 438", name: "TUBIGAN 38", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 440", name: "TUBIGAN 39", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 442", name: "TUBIGAN 40", maturity: "115 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 482 SR", name: "Japonica 5", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 484 SR", name: "Japonica 6", maturity: "115 araw", yield: "Mataas", type: "Uri ng Japonica" },
+            { code: "NSIC RC 506", name: "TUBIGAN 41", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 508", name: "TUBIGAN 42", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 510", name: "TUBIGAN 43", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 512", name: "TUBIGAN 44", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 514", name: "TUBIGAN 45", maturity: "107 araw", yield: "Napakataas", type: "May Patubig" },
+            { code: "NSIC RC 590", name: "SUBMARINO 2", maturity: "115 araw", yield: "Mataas", type: "Tolerant sa Paglubog" },
+        ];
+        
+        // --- 2. Data Definitions for Philippine Hybrid Varieties (Mestizo) ---
+        const philippineHybrids = [
+            // PSB Hybrid
+            { code: "PSB Rc26H", name: "MAGAT", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "PSB Rc76H", name: "PANAY", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "PSB Rc72H", name: "MESTIZO 1", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            // NSIC Mestizo Series
+            { code: "NSIC RC 114H", name: "MESTISO 2", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 116H", name: "MESTISO 3", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 124H", name: "MESTISO 4", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 126H", name: "MESTISO 5", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 132H", name: "MESTISO 6", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 136H", name: "MESTISO 7", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 162H", name: "MESTISO 8", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 164H", name: "MESTISO 9", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 166H", name: "MESTISO 10", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 168H", name: "MESTISO 11", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 174H", name: "MESTISO 12", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 176H", name: "MESTISO 13", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 178H", name: "MESTISO 14", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 180H", name: "MESTISO 15", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 196H", name: "MESTISO 16", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 198H", name: "MESTISO 17", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 200H", name: "MESTISO 18", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 202H", name: "MESTISO 19", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 204H", name: "MESTISO 20", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 206H", name: "MESTISO 21", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 208H", name: "MESTISO 22", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 210H", name: "MESTISO 23", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 228H", name: "MESTISO 24", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 230H", name: "MESTISO 25", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 232H", name: "MESTISO 26", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 234H", name: "MESTISO 27", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 236H", name: "MESTISO 28", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 244H", name: "MESTISO 29", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 246H", name: "MESTISO 30", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 248H", name: "MESTISO 31", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 250H", name: "MESTISO 32", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 252H", name: "MESTISO 33", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 254H", name: "MESTISO 34", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 256H", name: "MESTISO 35", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 258H", name: "MESTISO 36", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 260H", name: "MESTISO 37", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 262H", name: "MESTISO 38", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 264H", name: "MESTISO 39", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 266H", name: "MESTISO 40", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 268H", name: "MESTISO 41", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 270H", name: "MESTISO 42", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 306H", name: "MESTISO 43", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 310H", name: "MESTISO 44", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 312H", name: "MESTISO 45", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 314H", name: "MESTISO 46", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 316H", name: "MESTISO 47", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 318H", name: "MESTISO 48", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 320H", name: "MESTISO 49", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 322H", name: "MESTISO 50", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 350H", name: "MESTISO 51", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 362H", name: "MESTISO 52", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 364H", name: "MESTISO 53", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 366H", name: "MESTISO 54", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 368H", name: "MESTISO 55", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 370H", name: "MESTISO 56", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 372H", name: "MESTISO 57", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 374H", name: "MESTISO 58", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 376H", name: "MESTISO 59", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 378H", name: "MESTISO 60", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 380H", name: "MESTISO 61", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 382H", name: "MESTISO 62", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 404H", name: "MESTISO 66", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 406H", name: "MESTISO 67", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 408H", name: "MESTISO 68", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 410H", name: "MESTISO 69", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 412H", name: "MESTISO 70", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 432H", name: "MESTISO 71", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 444H", name: "MESTISO 72", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 446H", name: "MESTISO 73", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 448H", name: "MESTISO 74", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 450H", name: "MESTISO 75", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 452H", name: "MESTISO 76", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 454H", name: "MESTISO 77", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 456H", name: "MESTISO 78", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 458H", name: "MESTISO 79", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 486H", name: "MESTISO 80", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 488H", name: "MESTISO 81", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 490H", name: "MESTISO 82", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 492H", name: "MESTISO 83", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 494H", name: "MESTISO 84", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 496H", name: "MESTISO 85", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 498H", name: "MESTISO 86", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 500H", name: "MESTISO 87", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 502H", name: "MESTISO 88", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 504H", name: "MESTISO 89", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 516H", name: "MESTISO 90", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 518H", name: "MESTISO 91", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 520H", name: "MESTISO 92", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 522H", name: "MESTISO 93", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 524H", name: "MESTISO 94", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 526H", name: "MESTISO 95", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 542H", name: "MESTISO 98", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 544H", name: "MESTISO 99", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 546H", name: "MESTISO 100", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 548H", name: "MESTISO 101", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 550H", name: "MESTISO 102", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 552H", name: "MESTISO 103", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 586H", name: "MESTISO 104", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 588H", name: "MESTISO 105", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 614H", name: "MESTISO 106", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 616H", name: "MESTISO 107", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+            { code: "NSIC RC 618H", name: "MESTISO 108", maturity: "115-120 araw", yield: "Napakataas (Hybrid Vigor)", type: "Hybrid Irrigated" },
+        ];
+
+
+        // --- 3. Generic Agronomic Data Template (TAGALOG) ---
+        
+        const inbredAgronomicData = {
+            description: "Ang mga uring ito ng PSB (Philippine Seed Board) at NSIC (National Seed Industry Council) ay mga Inbred Palay na dinisenyo lalo na para sa mataas na ani sa mga lugar na May Patubig (Irrigated Lowland). Sila ang pundasyon ng komersyal na produksyon ng palay, nakatuon sa katatagan, magandang kalidad ng butil, at pag-angkop sa masinsinang pagsasaka.",
+            fertilizer: "Ang mga uring mataas ang ani ay nangangailangan ng 90-120 kg ng Nitrogen (N) bawat ektarya, 30-45 kg ng Phosphate (P₂O₅), at 30-45 kg ng Potash (K₂O). Mahalaga ang paghahati-hati ng pag-a-apply: Basal (unang) application ng lahat ng P at K kasama ang 1/3 ng N sa pagtatanim, 1/3 N sa pagdami ng suwi (maximum tillering), at ang huling 1/3 N sa pagsisimula ng uhay (panicle initiation).",
+            weakness: "Bagama't pinaganda, ang mga uring ito ay maaaring katamtamang tamaan ng Sakit na Blast (lalo na sa tag-araw/dry season) at Bacterial Leaf Blight (BLB). Marami rin ang sensitibo sa kakulangan ng Zinc sa mga lupaing mahirap alisan ng tubig o ma-apog (calcareous soils).",
+            pests: "Ang mga pangunahing peste na kadalasang umaatake ay ang Stem Borers (Atang-atang) at Rice Black Bugs (RBB - Atang-atang na Itim). Para sa kontrol sa sakit, inirerekomenda ang paggamit ng Fungicide laban sa Blast sa yugto ng paglilihi ng uhay (panicle initiation) at paglabas ng 90% ng uhay (heading). Gumamit ng Contact Insecticide para sa Atang-atang o RBB batay sa pagtingin sa dami ng pinsala (action threshold), lalo na sa panahon ng pag-uuhay (heading)."
+        };
+
+        const hybridAgronomicData = {
+            description: "Ang mga Hybrid Palay (Mestizo varieties) ay resulta ng pag-crossbreed ng dalawang magkaibang linya ng palay. Nagbubunga ito ng Hybrid Vigor, na nagreresulta sa mas mabilis na paglaki, mas maraming suwi, at mas mataas na potensyal sa ani (hanggang 10-15% na mas mataas kaysa Inbred). Sila ay Highly Recommended para sa mga lugar na may sapat na patubig at mahusay na pamamahala.",
+            fertilizer: "Dahil sa kanilang mataas na potensyal sa ani, ang Hybrid ay nangangailangan ng mas mataas na nutrisyon, karaniwang 120-150 kg ng Nitrogen (N) bawat ektarya, kasama ang P at K. Kailangan ng masinsinang pagsubaybay sa kulay ng dahon at mag-apply ng N sa apat (4) na yugto (basal, mid-tillering, maximum tillering, at panicle initiation) para masiguro ang tamang nutrisyon.",
+            weakness: "Ang Hybrid rice ay may mas mataas na gastos sa butil (seeds) at nangangailangan ng mas maingat at mas matinding pamamahala (intensive management) kumpara sa Inbred. Sila ay maaaring maging mas sensitibo sa Rice Blast at Sheath Blight kung hindi nasusunod ang tamang dami ng N-fertilizer. Kailangan ng 100% replacement ng butil kada tanim.",
+            pests: "Dahil sa malalaki nilang dahon at siksik na pagtubo, ang Hybrids ay madalas target ng Leaf Folder (Kagaw sa Dahon) at Rice Black Bug (RBB). Gumamit ng Systemic Fungicide (para sa Sheath Blight/Blast) sa pagdami ng suwi (tillering) at paglilihi ng uhay (panicle initiation). Para sa peste, mahigpit na subaybayan ang Stem Borer at Leaf Folder, at gumamit ng Insecticide base sa pagtingin ng pinsala (action threshold), lalo na sa panahon ng pag-uuhay (heading)."
+        };
+
+
+        // --- 4. Accordion Toggle Function (Adjusted for unique IDs) ---
+        function toggleDetails(contentId) {
+            const content = document.getElementById(contentId);
+            // The icon ID is the details ID with '-details' replaced by '-icon'
+            const icon = document.getElementById(contentId.replace('-details', '-icon'));
+
+            if (!content || !icon) return; // Guard clause
+
+            // Close all other open content first (good UX)
+            document.querySelectorAll('.accordion-content.active').forEach(item => {
+                if (item.id !== contentId) {
+                    item.classList.remove('active');
+                    const otherIcon = document.getElementById(item.id.replace('-details', '-icon'));
+                    if (otherIcon) otherIcon.textContent = '▼';
+                }
+            });
+
+            if (content.classList.contains('active')) {
+                // Collapse the content
+                content.classList.remove('active');
+                icon.textContent = '▼';
+            } else {
+                // Expand the content
+                content.classList.add('active');
+                icon.textContent = '▲';
+            }
+        }
+
+        // --- 5. Dynamic HTML Generation Function ---
+        function generateVarietyCards(dataArray, containerId, colorType, agronomicTemplate) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            let htmlContent = '';
+
+            dataArray.forEach((variety, index) => {
+                const id = `${colorType}-variety-${index}`;
+                const detailsId = `${id}-details`;
+                const iconId = `${id}-icon`;
+                
+                // Define color classes based on type (inbred/hybrid)
+                const borderColor = (colorType === 'inbred') ? 'border-emerald-600' : 'border-red-600';
+                const cardBg = (colorType === 'inbred') ? 'bg-emerald-50' : 'bg-red-50';
+                const textColor = (colorType === 'inbred') ? 'text-emerald-700' : 'text-red-700';
+
+                htmlContent += `
+                    <div id="${id}" class="variety-card bg-white p-5 rounded-lg shadow-md border-t-4 ${borderColor} cursor-pointer" onclick="toggleDetails('${detailsId}')">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-gray-900">${variety.code} (${variety.name})</h3>
+                            <span class="${textColor} text-2xl transition-transform" id="${iconId}">▼</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Kategorya: ${variety.type} | Haba ng Araw (Maturity): ${variety.maturity} | Potensyal na Ani: ${variety.yield}</p>
+                        
+                        <div id="${detailsId}" class="accordion-content">
+                            <div class="mt-4 p-4 ${cardBg} rounded-lg border border-gray-200 space-y-3">
+                                <h4 class="font-semibold text-lg ${textColor} mb-2 border-b border-gray-300 pb-1">Profile sa Pagsasaka (${variety.type})</h4>
+                                
+                                <div>
+                                    <h5 class="font-bold text-base ${textColor}">Ano ang Palay na Ito?</h5>
+                                    <p class="text-gray-700 text-sm">${agronomicTemplate.description}</p>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-bold text-base ${textColor}">Pangangailangan sa Abono (Fertilizer)</h5>
+                                    <p class="text-gray-700 text-sm">${agronomicTemplate.fertilizer}</p>
+                                </div>
+
+                                <div>
+                                    <h5 class="font-bold text-base ${textColor}">Pangunahing Kahinaan (Sakit at Kakulangan)</h5>
+                                    <p class="text-gray-700 text-sm">${agronomicTemplate.weakness}</p>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-bold text-base ${textColor}">Mga Peste na Umaatake at Pamamahala (Pesticide)</h5>
+                                    <p class="text-gray-700 text-sm">${agronomicTemplate.pests}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlContent;
+        }
+
+        // --- 6. Initialization on Load ---
+        window.onload = function() {
+            // 1. Generate Inbred Cards
+            generateVarietyCards(philippineInbreds, 'inbred-varieties-list', 'inbred', inbredAgronomicData);
+            
+            // 2. Generate Hybrid Cards
+            generateVarietyCards(philippineHybrids, 'hybrid-varieties-list', 'hybrid', hybridAgronomicData);
+        };
+    </script>
+</body>
+</html>
+
+
+
+OWNER:KENNETH VITRIOLO
+
